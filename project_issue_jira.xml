@@ -9,6 +9,7 @@
             <xpath expr="/form/sheet/group/group/field[@name='email_from']" position="after">
                 <field name="jira_id" />
                 <field name="jira_key" />
+                <field name="jira_link" widget="url"/>
             </xpath>
             <xpath expr="/form/sheet/notebook/page/field[@name='description']" position="attributes">
 		<attribute name="attrs">{'readonly':[('jira_id', '!=', 0)]}</attribute>

@@ -15,6 +15,7 @@ class project_issue_jira(osv.osv):
     'jira_id': fields.integer('JIRA id', size=11, readonly=True),
     'jira_key': fields.char('JIRA key', size=256, readonly=True),
     'jira_status': fields.char('JIRA status', size=30, readonly=True),
+    'jira_link': fields.char('JIRA Issue Link', size=256, readonly=True),
   }
 
 
@@ -52,6 +53,11 @@ class project_jira(osv.osv):
 
     return jira
 
+  def get_jira_issue_link(self, cr, uid, isskey):
+    jserver=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_SERVER)
+    jprotocol=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_PROTOCOL)
+
+    return jprotocol+'://'+jserver+'/browse/'+isskey
 
   def cron_jira_sync(self, cr, uid, context=None):
     logging.info('Sync all - cron job')
@@ -116,7 +122,8 @@ class project_jira(osv.osv):
 		issstatus = new_issue.fields.status.name
 		#isslink = new_issue.fields.issuelinks
 
-		#logging.info(isslink)
+		isslink = self.get_jira_issue_link(cr, uid, isskey)
+		logging.info(isslink)
 		#logging.info(dir(isslink))
 
 		##save values from jira to odoo issue
@@ -124,6 +131,7 @@ class project_jira(osv.osv):
 		issue_obj.write(cr, uid, issueid.id, {'jira_key': isskey}, context=context)
 		issue_obj.write(cr, uid, issueid.id, {'jira_id': issid}, context=context)
 		issue_obj.write(cr, uid, issueid.id, {'jira_status': issstatus}, context=context)
+		issue_obj.write(cr, uid, issueid.id, {'jira_link': isslink}, context=context)
 
 	    ##jira_id and jira_key are filled. Update issues...
 	    else:
@@ -134,7 +142,7 @@ class project_jira(osv.osv):
 		jira_description = issue_to_update.fields.description
 		odoo_jira_status = odoo_issue.jira_status
 		odoo_jira_description = odoo_issue.description
-
+		
 		if jira_description != odoo_jira_description:
 		    ###differences between descriptions. Doing update...(field+openchatter)
 		    issue_obj_update = self.pool.get('project.issue')
