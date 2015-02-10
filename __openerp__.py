@@ -12,7 +12,10 @@
     'category': 'Uncategorized',
     # any module necessary for this one to work correctly
     'depends': ['project'],
-    'data': ['project_issue_jira.xml'],
+    'data': [
+	'project_issue_jira.xml',
+	'jira_config_view.xml',
+    ],
     'demo': [],
     'installable': True,
 }

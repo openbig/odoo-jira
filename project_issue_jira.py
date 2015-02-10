@@ -3,6 +3,8 @@ from jira.client import JIRA
 from openerp.tools.translate import _
 import logging
 import openerp.exceptions
+from jira_config import JIRA_SERVER, JIRA_PROTOCOL, JIRA_USERNAME, JIRA_PASSWORD, jira_configuration
+
 
 class project_issue_jira(osv.osv):
 
@@ -14,8 +16,6 @@ class project_issue_jira(osv.osv):
     'jira_key': fields.char('JIRA key', size=256, readonly=True),
     'jira_status': fields.char('JIRA status', size=30, readonly=True),
   }
-
-
 
 
 class project_jira(osv.osv):
@@ -34,12 +34,21 @@ class project_jira(osv.osv):
 
 
   def connect_to_jira(self, cr, uid, context=None):
+
+    #jserver=super(jira_configuration, self).get_default_jira_server(cr, uid, ids, context=None)
+    jserver=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_SERVER)
+    jprotocol=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_PROTOCOL)
+    jusername=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_USERNAME)
+    jpassword=self.pool.get('ir.config_parameter').get_param(cr, uid, JIRA_PASSWORD)
+
+    serverlink = jprotocol+'://'+jserver
+
     options = {
-	'server': 'http://jira.cirrus.pl:8080'
+	'server': serverlink
     }
 
     ###connect to jira
-    jira=JIRA(options,basic_auth=('sync', 'mepNokgiak'))
+    jira=JIRA(options,basic_auth=(jusername, jpassword))
 
     return jira
 
@@ -105,6 +114,10 @@ class project_jira(osv.osv):
 		issid = new_issue.id
 		isskey = new_issue.key
 		issstatus = new_issue.fields.status.name
+		#isslink = new_issue.fields.issuelinks
+
+		#logging.info(isslink)
+		#logging.info(dir(isslink))
 
 		##save values from jira to odoo issue
 		issue_obj = self.pool.get('project.issue')
