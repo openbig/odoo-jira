@@ -144,10 +144,12 @@ class project_jira(osv.osv):
 		odoo_jira_description = odoo_issue.description
 		
 		if jira_description != odoo_jira_description:
-		    ###differences between descriptions. Doing update...(field+openchatter)
-		    issue_obj_update = self.pool.get('project.issue')
-		    issue_obj_update.write(cr, uid, issueid.id, {'description': jira_description}, context=context)
-		    issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue description has changed."), context=context)
+		    ###if jira issue has no description it sends 'False' - need to eliminate this
+		    if jira_description != 'False':
+			###differences between descriptions. Doing update...(field+openchatter)
+			issue_obj_update = self.pool.get('project.issue')
+			issue_obj_update.write(cr, uid, issueid.id, {'description': jira_description}, context=context)
+			issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue description has changed."), context=context)
 
 
 		if str(jira_status) != str(odoo_jira_status):
@@ -156,14 +158,24 @@ class project_jira(osv.osv):
 		    issue_obj_update.write(cr, uid, issueid.id, {'jira_status': jira_status}, context=context)
 		    issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue status has changed to "+str(jira_status)), context=context)
 
-		    ###if jira issue status is 'Done' do update of odoo stage_id
-		    if str(jira_status) == "Done":
-			###search id of Done status
-			task_type_id=self.get_task_done_id(cr, uid, context=None)
-			###update issue status to Done
+		    task_type_id=self.get_task_id(cr, uid, jira_status, context=None)
+		    logging.info(task_type_id)
+		    if task_type_id:
+			###update issue status
 			issue_obj_update.write(cr, uid, issueid.id, {'stage_id': task_type_id}, context=context)
 
 		logging.info(odoo_issue.name)
+
+
+
+  def get_task_id(self, cr, uid, jira_status, context=None):
+    query = str(jira_status)+"%"
+    task_type = self.pool.get('project.task.type').search(cr, uid, [('name', 'like', query)])
+    if task_type:
+	task_type_id = self.pool.get('project.task.type').browse(cr, uid, task_type, context=context)
+
+    return task_type_id.id
+
 
   def get_task_done_id(self, cr, uid, context=None):
     task_type = self.pool.get('project.task.type').search(cr, uid, [('name', '=', 'Done')])
