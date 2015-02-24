@@ -7,6 +7,7 @@ from jira_config import JIRA_SERVER, JIRA_PROTOCOL, JIRA_USERNAME, JIRA_PASSWORD
 from openerp import SUPERUSER_ID
 import string
 import os
+import re
 
 class project_issue_jira(osv.osv):
 
@@ -146,6 +147,11 @@ class project_jira(osv.osv):
 	    "2":"Critical"
 	}
 
+	def _get_mail(issue_id):
+    	    email_obj = self.pool.get('mail.message')
+            email_id = email_obj.search(cr, uid, [('model', '=', 'project.issue'), ('type', '=', 'email'), ('res_id', '=', issue_id)], context=context)
+
+	    return email_obj.browse(cr, uid, email_id, context=context)
 
 	def _get_attachments(issue_id):
     	    attach_obj = self.pool.get('ir.attachment')
@@ -226,6 +232,12 @@ class project_jira(osv.osv):
 	    ##if jira_id and jira_key are empty it means that this is a new issue, which we need to transfer to jira
 	    if not jira_id and not jira_key:
 		logging.info('jira_id and jira_key are empty - creating issue in JIRA app...')
+
+		##need to check if issue was created from email. If so, we need to get mail body from mail_message table
+                email = _get_mail(issueid.id)
+		if email:
+		    desc = re.sub("<.*?>", "",email.body)
+
 		issue_dict = {
 	    	    'project': {'key': str(jira_project_key)},
 	    	    'summary': str(name),
@@ -257,16 +269,6 @@ class project_jira(osv.osv):
                 attachments = _get_attachments(issueid.id)
 		att = _handle_attachments(attachments,odoo_jira_attachments,isskey,issue_obj)
 
-##                for attachment in attachments:
-##		    att = self.pool.get('ir.attachment').browse(cr, SUPERUSER_ID, attachment.id, context=context)
-##		    fi='/tmp/filestore/'+att.datas_fname
-##		    sa = _save_attachments(fi, att.datas)
-
-##		    if sa:
-##			jira.add_attachment(isskey,fi,att.datas_fname)
-##			if os.path.exists(fi):
-##                    	    os.remove(fi)
-
 	    ##jira_id and jira_key are filled. Update issues...
 	    else:
 		logging.info('Issue exists in JIRA application. Doing update...')
@@ -285,16 +287,6 @@ class project_jira(osv.osv):
 
                 attachments = _get_attachments(issueid.id)
 		att = _handle_attachments(attachments,odoo_jira_attachments,jira_key,issue_obj_update)
-
-##                for attachment in attachments:
-##		    att = self.pool.get('ir.attachment').browse(cr, SUPERUSER_ID, attachment.id, context=context)
-##		    fi='/tmp/filestore/'+att.datas_fname
-##		    sa = _save_attachments(fi, att.datas)
-
-##		    if sa:
-###			jira.add_attachment(jira_key,fi,att.datas_fname)
-##			if os.path.exists(fi):
-##                    	    os.remove(fi)
 
 		###Handling the comments
 		commids=''
