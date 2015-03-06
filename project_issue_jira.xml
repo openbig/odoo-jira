@@ -14,6 +14,9 @@
             <xpath expr="/form/sheet/notebook/page/field[@name='description']" position="attributes">
 		<attribute name="attrs">{'readonly':[('jira_id', '!=', 0)]}</attribute>
             </xpath>
+	    <button name="case_escalate" position="replace">
+		<button name="issue_escalate" string="Escalate" type="object" class="oe_link"/>
+            </button>
         </field>
     </record>
 
