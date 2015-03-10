@@ -23,8 +23,6 @@ from openerp import models, fields
 
 
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
 _TASK_STATE = [
     ('Open', 'Open'),
     ('In Progress', 'In Progress'),
@@ -32,17 +30,13 @@ _TASK_STATE = [
     ('Resolved', 'Resolved'),
     ('Closed', 'Closed')]
 =======
->>>>>>> 87bedbff05e25a51f78cab08d8308332a2d788e8
     _TASK_STATE = [
     ('open', 'Open'),
     ('progress', 'In Progress'),
     ('reopened', 'Reopened'),
     ('resolved', 'Resolved'),
     ('closed', 'Closed')]
-<<<<<<< HEAD
-=======
 >>>>>>> ad63c68ce0dd5dd76861785efaed1f53c36a026d
->>>>>>> 87bedbff05e25a51f78cab08d8308332a2d788e8
 
 
 class ProjectTaskType(models.Model):
