@@ -33,14 +33,10 @@ class project_issue_jira(osv.osv):
 
 
 <<<<<<< HEAD
-  def issue_escalate(self, cr, uid, ids, context=None):        # FIXME rename this method to issue_escalate
-=======
-<<<<<<< HEAD
   def issue_escalate(self, cr, uid, ids, context=None):
 =======
   def issue_escalate(self, cr, uid, ids, context=None):        # FIXME rename this method to issue_escalate
 >>>>>>> ad63c68ce0dd5dd76861785efaed1f53c36a026d
->>>>>>> 87bedbff05e25a51f78cab08d8308332a2d788e8
     for issue in self.browse(cr, uid, ids, context=context):
         data = {}
         esc_proj = issue.project_id.project_escalation_id
