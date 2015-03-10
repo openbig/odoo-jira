@@ -1,0 +1,133 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* project_issue_jira
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-13 07:15+0000\n"
+"PO-Revision-Date: 2015-02-13 08:27+0100\n"
+"Last-Translator: openbig.org - Thorsten Vocks <thorsten.vocks@openbig.org>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.5\n"
+
+#. module: project_issue_jira
+#: code:addons/project_issue_jira/project_issue_jira.py:188
+#, python-format
+msgid "Current JIRA Project Key value do not exist in JIRA application!"
+msgstr "Dieser Projekt Key existiert nicht in JIRA! "
+
+#. module: project_issue_jira
+#: code:addons/project_issue_jira/project_issue_jira.py:190
+#, python-format
+msgid "Current ODOO project is not assigned to JIRA project!"
+msgstr "Das Projekt in Odoo ist nicht mit einem JIRA Projekt verknüpft!"
+
+#. module: project_issue_jira
+#: code:addons/project_issue_jira/project_issue_jira.py:188
+#: code:addons/project_issue_jira/project_issue_jira.py:190
+#, python-format
+msgid "Information!"
+msgstr "Information!"
+
+#. module: project_issue_jira
+#: view:project.config.settings:project_issue_jira.view_config_settings
+msgid "Issue"
+msgstr "Fall"
+
+#. module: project_issue_jira
+#: field:project.issue,jira_link:0
+msgid "JIRA Issue Link"
+msgstr "JIRA-Fall URL"
+
+#. module: project_issue_jira
+#: field:project.project,jira_project_key:0
+msgid "JIRA Project Key"
+msgstr "JIRA Projekt Key"
+
+#. module: project_issue_jira
+#: view:project.config.settings:project_issue_jira.view_config_settings
+msgid "JIRA Server Connection"
+msgstr "JIRA Server Verbindung"
+
+#. module: project_issue_jira
+#: field:project.issue,jira_id:0
+msgid "JIRA id"
+msgstr "JIRA ID"
+
+#. module: project_issue_jira
+#: code:addons/project_issue_jira/project_issue_jira.py:150
+#, python-format
+msgid "JIRA issue description has changed."
+msgstr "Die Beschreibung wurde in JIRA geändert. "
+
+#. module: project_issue_jira
+#: code:addons/project_issue_jira/project_issue_jira.py:157
+#, python-format
+msgid "JIRA issue status has changed to "
+msgstr "Der Status wurde in JIRA geändert zu"
+
+#. module: project_issue_jira
+#: field:project.issue,jira_key:0
+msgid "JIRA key"
+msgstr "JIRA Key"
+
+#. module: project_issue_jira
+#: field:project.issue,jira_status:0
+msgid "JIRA status"
+msgstr "JIRA Status"
+
+#. module: project_issue_jira
+#: field:project.config.settings,jira_server:0
+msgid "Link to JIRA application"
+msgstr "JIRA URL"
+
+#. module: project_issue_jira
+#: field:project.config.settings,jira_password:0
+msgid "Password"
+msgstr "Passwort"
+
+#. module: project_issue_jira
+#: model:ir.model,name:project_issue_jira.model_project_project
+msgid "Project"
+msgstr "Projekt"
+
+#. module: project_issue_jira
+#: model:ir.model,name:project_issue_jira.model_project_issue
+msgid "Project Issue"
+msgstr "Fall"
+
+#. module: project_issue_jira
+#: field:project.config.settings,jira_protocol:0
+msgid "Protocol"
+msgstr "Protokoll"
+
+#. module: project_issue_jira
+#: view:project.project:project_issue_jira.project_jira_project
+msgid "Sync JIRA Now"
+msgstr "JIRA Synchro starten"
+
+#. module: project_issue_jira
+#: field:project.config.settings,jira_username:0
+msgid "Username"
+msgstr "Benutzer"
+
+#. module: project_issue_jira
+#: selection:project.config.settings,jira_protocol:0
+msgid "http"
+msgstr "http"
+
+#. module: project_issue_jira
+#: selection:project.config.settings,jira_protocol:0
+msgid "https"
+msgstr "https"
+
+#. module: project_issue_jira
+#: view:project.issue:project_issue_jira.project_issue_jira_project
+msgid "{'readonly':[('jira_id', '!=', 0)]}"
+msgstr "{'readonly':[('jira_id', '!=', 0)]}"
