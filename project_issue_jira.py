@@ -131,15 +131,6 @@ class project_jira(osv.osv):
 	return 0
 
   def sync_project(self, cr, uid, project_issue_ids, jira_project_key, jira, context=None):
-	stagemap = {
-            "Open (JIRA)":"Open",
-            "In Progress (JIRA)":"In Progress",
-	    "Reopened (JIRA)":"Reopened",
-	    "Resolved (JIRA)":"Resolved",
-	    "Closed (JIRA)":"Done",
-	    "Cancelled":"Cancelled",
-	    "Done":"Done"
-        }
 
 	prioritymap = {
 	    "0":"Minor",
@@ -256,7 +247,6 @@ class project_jira(osv.osv):
 
 		isslink = self.get_jira_issue_link(cr, uid, isskey)
 		logging.info(isslink)
-		#logging.info(dir(isslink))
 
 		##save values from jira to odoo issue
 		issue_obj = self.pool.get('project.issue')
@@ -328,10 +318,9 @@ class project_jira(osv.osv):
 			issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue description has changed."), context=context)
 
 		task_type_name=self.get_task_type_name(cr, uid, odoo_stage_id, context=None)
-		current_odoo_stage = stagemap[task_type_name]
+		current_odoo_state=self.get_task_type_state(cr, uid, odoo_stage_id, context=None)
 
-
-		if str(jira_status) != str(current_odoo_stage):
+		if (str(jira_status) != str(current_odoo_state)):
 		    ###differencess between statuses. Doing update...(field+openchatter)
 		    #issue_obj_update = self.pool.get('project.issue')
 		    issue_obj_update.write(cr, uid, issueid.id, {'jira_status': jira_status}, context=context)
@@ -339,10 +328,18 @@ class project_jira(osv.osv):
 
 		    task_type_id=self.get_task_id(cr, uid, jira_status, context=None)
 		    if task_type_id:
-			###update issue status
-			issue_obj_update.write(cr, uid, issueid.id, {'stage_id': task_type_id}, context=context)
+		        ###update issue status
+		        issue_obj_update.write(cr, uid, issueid.id, {'stage_id': task_type_id}, context=context)
 
 		logging.info(odoo_issue.name)
+
+
+  def get_task_type_state(self, cr, uid, stage_id, context=None):
+    state = self.pool.get('project.task.type').search(cr, uid, [('id', '=', stage_id)])
+    if state:
+	task_type_state = self.pool.get('project.task.type').browse(cr, uid, state, context=context)
+
+    return task_type_state.state
 
 
   def get_task_type_name(self, cr, uid, stage_id, context=None):
@@ -354,8 +351,9 @@ class project_jira(osv.osv):
 
 
   def get_task_id(self, cr, uid, jira_status, context=None):
-    query = str(jira_status)+"%"
-    task_type = self.pool.get('project.task.type').search(cr, uid, [('name', 'like', query)])
+    js = str(jira_status)
+    task_type = self.pool.get('project.task.type').search(cr, uid, [('state', '=', js)])
+
     if task_type:
 	task_type_id = self.pool.get('project.task.type').browse(cr, uid, task_type, context=context)
 
