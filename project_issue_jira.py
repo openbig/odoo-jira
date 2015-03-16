@@ -230,9 +230,9 @@ class project_jira(osv.osv):
 		    desc = re.sub("<.*?>", "",email.body)
 
 		issue_dict = {
-	    	    'project': {'key': str(jira_project_key)},
-	    	    'summary': str(name),
-	    	    'description': str(desc),
+	    	    'project': {'key': jira_project_key.encode('utf-8')},
+	    	    'summary': name.encode('utf-8'),
+	    	    'description': desc.encode('utf-8'),
 	    	    'issuetype': {'name': 'Bug'},
 		    'priority': {'name': prioritymap[priority]},
 		}
@@ -314,24 +314,32 @@ class project_jira(osv.osv):
 		    ###if jira issue has no description it sends 'False' - need to eliminate this
 		    if jira_description != 'False':
 			###differences between descriptions. Doing update...(field+openchatter)
-			issue_obj_update.write(cr, uid, issueid.id, {'description': jira_description}, context=context)
+			issue_obj_update.write(cr, uid, issueid.id, {'description': jira_description.encode('utf-8')}, context=context)
 			issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue description has changed."), context=context)
 
 		task_type_name=self.get_task_type_name(cr, uid, odoo_stage_id, context=None)
 		current_odoo_state=self.get_task_type_state(cr, uid, odoo_stage_id, context=None)
 
-		if (str(jira_status) != str(current_odoo_state)):
-		    ###differencess between statuses. Doing update...(field+openchatter)
-		    #issue_obj_update = self.pool.get('project.issue')
-		    issue_obj_update.write(cr, uid, issueid.id, {'jira_status': jira_status}, context=context)
-		    issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue status has changed to "+str(jira_status)), context=context)
+		if (jira_status != current_odoo_state):
+		    if current_odoo_state:
+			###differencess between statuses. Doing update...(field+openchatter)
+			##issue_obj_update.write(cr, uid, issueid.id, {'jira_status': jira_status}, context=context)
+			##issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue status has changed to "+str(jira_status)), context=context)
 
-		    task_type_id=self.get_task_id(cr, uid, jira_status, context=None)
-		    if task_type_id:
-		        ###update issue status
-		        issue_obj_update.write(cr, uid, issueid.id, {'stage_id': task_type_id}, context=context)
+			task_type_id=self.get_task_id(cr, uid, jira_status, context=None)
 
-		logging.info(odoo_issue.name)
+			if task_type_id != 0:
+			    issue_obj_update.write(cr, uid, issueid.id, {'jira_status': jira_status.encode('utf-8')}, context=context)
+			    issue_obj_update.message_post(cr, uid, issueid.id, body=_("JIRA issue status has changed to "+jira_status.encode('utf-8')), context=context)
+
+		    	    ###update issue status
+		    	    issue_obj_update.write(cr, uid, issueid.id, {'stage_id': task_type_id}, context=context)
+			else:
+			    logging.info('1. Stage not updated! Mapping stage-state for '+jira_status.encode('utf-8')+' not set!')
+		    else:
+			logging.info('2. Stage not updated! Mapping stage-state for '+jira_status.encode('utf-8')+' not set!')
+
+		    logging.info(odoo_issue.name)
 
 
   def get_task_type_state(self, cr, uid, stage_id, context=None):
@@ -351,13 +359,16 @@ class project_jira(osv.osv):
 
 
   def get_task_id(self, cr, uid, jira_status, context=None):
-    js = str(jira_status)
+    js = jira_status.encode('utf-8')
     task_type = self.pool.get('project.task.type').search(cr, uid, [('state', '=', js)])
 
     if task_type:
 	task_type_id = self.pool.get('project.task.type').browse(cr, uid, task_type, context=context)
+	task_type_id = task_type_id.id
+    else:
+	task_type_id = 0
 
-    return task_type_id.id
+    return task_type_id
 
 
   def get_task_done_id(self, cr, uid, context=None):
