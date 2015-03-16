@@ -32,7 +32,8 @@ class project_issue_jira(osv.osv):
     return task_type_id.id
 
 
-  def issue_escalate(self, cr, uid, ids, context=None):
+  def issue_escalate(self, cr, uid, ids, context=None):        # FIXME rename this method to issue_escalate
+
     for issue in self.browse(cr, uid, ids, context=context):
         data = {}
         esc_proj = issue.project_id.project_escalation_id
