@@ -28,7 +28,7 @@ _TASK_STATE = [
     ('Resolved', 'Resolved'),
     ('Closed', 'Closed')]
 
-    _TASK_STATE = [
+_TASK_STATE = [
     ('open', 'Open'),
     ('progress', 'In Progress'),
     ('reopened', 'Reopened'),
