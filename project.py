@@ -28,14 +28,6 @@ _TASK_STATE = [
     ('Resolved', 'Resolved'),
     ('Closed', 'Closed')]
 
-_TASK_STATE = [
-    ('open', 'Open'),
-    ('progress', 'In Progress'),
-    ('reopened', 'Reopened'),
-    ('resolved', 'Resolved'),
-    ('closed', 'Closed')]
-
-
 class ProjectTaskType(models.Model):
     _inherit = 'project.task.type'
     state = fields.Selection(_TASK_STATE, 'State')
