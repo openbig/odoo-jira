@@ -93,7 +93,7 @@ Contributors
     'category': 'Project',
     'depends': [
     'project',
-    'project_stage_state_customization',
+    'project_state_stage_customization',
     ],
     'data': [
 	'project_issue_jira.xml',
