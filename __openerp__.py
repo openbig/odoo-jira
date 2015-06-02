@@ -87,7 +87,7 @@ Contributors
 ============
 * Agnieszka Kulpa (Cirrus)
 * Thorsten Vocks (OpenBIG.org)
-* Mikołaj Dziurzyński (OpenBIG.org)
+* Mikołaj Dziurzyński (OpenGlobe)
 
     """,
     'category': 'Project',
