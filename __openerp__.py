@@ -85,7 +85,7 @@ It can be further extended.
 
 Contributors
 ============
-
+* Agnieszka Kulpa (Cirrus)
 * Thorsten Vocks (OpenBIG.org)
 * Mikołaj Dziurzyński (OpenBIG.org)
 
